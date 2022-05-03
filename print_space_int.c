@@ -1,26 +1,38 @@
 #include "main.h"
 
 /**
- * print_str - writes the string to stdout
+ * prinsint - prints int begining with space
  * @arguments: input string
  * @buf: buffer pointer
  * @ibuf: index for buffer pointer
- * Return: On success 1.
+ * Return: number of chars printed
  */
-int print_str(va_list arguments, char *buf, unsigned int ibuf)
+int prinsint(va_list arguments, char *buf, unsigned int ibuf)
 {
-	char *str;
-	unsigned int i;
-	char nill[] = "(null)";
+	int int_input;
+	unsigned int int_in, int_temp, i, div;
 
-	str = va_arg(arguments, char *);
-	if (str == NULL)
+	int_input = va_arg(arguments, int);
+	if (int_input < 0)
 	{
-		for (i = 0; nill[i]; i++)
-			ibuf = handl_buf(buf, nill[i], ibuf);
-		return (6);
+		int_in = int_input * -1;
+		ibuf = handl_buf(buf, '-', ibuf);
 	}
-	for (i = 0; str[i]; i++)
-		ibuf = handl_buf(buf, str[i], ibuf);
-	return (i);
+	else
+	{
+		int_in = int_input;
+		ibuf = handl_buf(buf, ' ', ibuf);
+	}
+	int_temp = int_in;
+	div = 1;
+	while (int_temp > 9)
+	{
+		div *= 10;
+		int_temp /= 10;
+	}
+	for (i = 0; div > 0; div /= 10, i++)
+	{
+		ibuf = handl_buf(buf, ((int_in / div) % 10) + '0', ibuf);
+	}
+	return (i + 1);
 }
