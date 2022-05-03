@@ -1,42 +1,43 @@
 #include "main.h"
-
 /**
- * print_int - prints an integer
+ * print_hex - prints a decimal in hexadecimal
  * @arguments: input string
  * @buf: buffer pointer
  * @ibuf: index for buffer pointer
- * Return: number of chars printed.
+ * Return: number of chars printed
  */
-int print_int(va_list arguments, char *buf, unsigned int ibuf)
+int print_hex(va_list arguments, char *buf, unsigned int ibuf)
 {
-	int int_input;
-	unsigned int int_in, int_temp, i, div, isneg;
+	int int_input, i, isnegative, count, first_digit;
+	char *hexadecimal, *binary;
 
 	int_input = va_arg(arguments, int);
-	isneg = 0;
+	isnegative = 0;
+	if (int_input == 0)
+	{
+		ibuf = handl_buf(buf, '0', ibuf);
+		return (1);
+	}
 	if (int_input < 0)
 	{
-		int_in = int_input * -1;
-		ibuf = handl_buf(buf, '-', ibuf);
-		isneg = 1;
+		int_input = (int_input * -1) - 1;
+		isnegative = 1;
 	}
-	else
+	binary = malloc(sizeof(char) * (32 + 1));
+	binary = fill_binary_array(binary, int_input, isnegative, 32);
+	hexadecimal = malloc(sizeof(char) * (8 + 1));
+	hexadecimal = fill_hex_array(binary, hexadecimal, 0, 8);
+	for (first_digit = i = count = 0; hexadecimal[i]; i++)
 	{
-		int_in = int_input;
+		if (hexadecimal[i] != '0' && first_digit == 0)
+			first_digit = 1;
+		if (first_digit)
+		{
+			ibuf = handl_buf(buf, hexadecimal[i], ibuf);
+			count++;
+		}
 	}
-
-	int_temp = int_in;
-	div = 1;
-
-	while (int_temp > 9)
-	{
-		div *= 10;
-		int_temp /= 10;
-	}
-
-	for (i = 0; div > 0; div /= 10, i++)
-	{
-		ibuf = handl_buf(buf, ((int_in / div) % 10) + '0', ibuf);
-	}
-	return (i + isneg);
+	free(binary);
+	free(hexadecimal);
+	return (count);
 }
